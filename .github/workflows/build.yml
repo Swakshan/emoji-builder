@@ -1,10 +1,7 @@
 name: Build WhatsAppEmoji
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch
 
 jobs:
   build:
@@ -21,7 +18,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install --yes zopfli pngquant
         python -m pip install --upgrade pip
-        python -m pip install -r https://raw.githubusercontent.com/dmlls/whatsapp-emoji-linux/main/requirements.txt
+        python -m pip install -r https://raw.githubusercontent.com/Swakshan/emoji-builder/main/requirements.txt
     - name: Build WhatsAppEmoji
       run: |
         make -j
@@ -31,3 +28,10 @@ jobs:
       with:
         name: WhatsAppEmoji
         path: build/WhatsAppEmoji.ttf
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: build/WhatsAppEmoji.ttf
+        asset_name: WhatsAppEmoji.ttf
+        asset_content_type: application/octet-stream
